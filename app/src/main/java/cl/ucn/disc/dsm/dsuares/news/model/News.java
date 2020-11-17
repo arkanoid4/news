@@ -10,7 +10,7 @@
 
 package cl.ucn.disc.dsm.dsuares.news.model;
 
-import java.time.ZonedDateTime;
+import org.threeten.bp.ZonedDateTime;
 
 /**
  * The Domain model: News.
@@ -22,48 +22,48 @@ public final class News {
     /**
      * Unique id.
      */
-    private Long id;
+    private final Long id;
 
     /**
      * The title.
      * Restrictions: not null, size > 2
      */
-    private String title;
+    private final String title;
 
     /**
      * The source.
      */
-    private String source;
+    private final String source;
 
     /**
      * The Author.
      */
-    private String author;
+    private final String author;
 
     /**
      * The URL.
      */
-    private String url;
+    private final String url;
 
     /**
      *  The URL of image.
      */
-    private String urlImage;
+    private final String urlImage;
 
     /**
      * The Description.
      */
-    private String description;
+    private final String description;
 
     /**
      * The Content
      */
-    private String content;
+    private final String content;
 
     /**
      * The Date of publish.
      */
-    private ZonedDateTime publishedAt;
+    private final ZonedDateTime publishedAt;
 
     /**
      * The Constructor.
@@ -79,6 +79,7 @@ public final class News {
      * @param publishedAt
      */
     public News(Long id, String title, String source, String author, String url, String urlImage, String description, String content, ZonedDateTime publishedAt) {
+        // TODO: add the validations
         this.id = id;
         this.title = title;
         this.source = source;
@@ -91,7 +92,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the id.
      */
     public Long getId() {
@@ -99,7 +99,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the title.
      */
     public String getTitle() {
@@ -107,7 +106,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the source.
      */
     public String getSource() {
@@ -115,7 +113,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the author.
      */
     public String getAuthor() {
@@ -123,7 +120,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the url.
      */
     public String getUrl() {
@@ -131,7 +127,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the urlImage.
      */
     public String getUrlImage() {
@@ -139,7 +134,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the description.
      */
     public String getDescription() {
@@ -147,7 +141,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the content.
      */
     public String getContent() {
@@ -155,7 +148,6 @@ public final class News {
     }
 
     /**
-     *
      * @return the publishedAt.
      */
     public ZonedDateTime getPublishedAt() {
