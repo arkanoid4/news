@@ -10,8 +10,8 @@
 
 package cl.ucn.disc.dsm.dsuares.news.services;
 
-import com.github.javafaker.Faker;
-
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -22,49 +22,41 @@ import java.util.List;
 import cl.ucn.disc.dsm.dsuares.news.model.News;
 
 /**
+ * The Test.
+ *
  * @author Daniel Suares-Suares.
  */
-public class TestContractsImpl {
+public final class TestContractsImplNewsApi {
 
     /**
-     * The Logger.
+     * The logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(TestContractsImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(TestContractsImplNewsApi.class);
 
     /**
-     * The Test of Retrieve news.
+     * The Test of retrieve news.
      */
     @Test
     public void testRetrieveNews() {
+
         log.debug("Testing ..");
 
-        // The Implementation
-        Contracts contracts = new ContractsImpl();
+        // The Contracts
+        Contracts contracts = new ContractsImplNewsApi("2c9f5fcc43004db4bf70eb66e91bc828");
 
-        // Call the method
-        List<News> news = contracts.retrieveNews(5);
-        Assertions.assertNotNull(news, "List was null :(");
-        Assertions.assertTrue(news.size() != 0, "Empty list? :(");
-        Assertions.assertTrue(news.size() == 5, "List size != 5 :(");
+        // The list of news
+        int size = 20;
+        List<News> news = contracts.retrieveNews(size);
 
-        log.debug("Done.");
-    }
+        // Validations!
+        Assertions.assertNotNull(news, "List null !!");
+        Assertions.assertEquals(size, news.size(), "Wrong size!");
 
-    /**
-     * Show the faker
-     */
-    @Test
-    public void testFaker(){
-
-        // Build the Faker.
-        Faker faker = Faker.instance();
-
-        for (int i = 0; i < 5; i++) {
-            log.debug("Name: {}", faker.name().fullName());
-            // FIXME: Remove
-            System.out.println("Name: " + faker.name().fullName());
+        // Show the news
+        for  (News n : news) {
+            log.debug("News: {}.", ToStringBuilder.reflectionToString(n, ToStringStyle.MULTI_LINE_STYLE));
         }
+
+        log.debug(".. end.");
     }
-
-
 }
