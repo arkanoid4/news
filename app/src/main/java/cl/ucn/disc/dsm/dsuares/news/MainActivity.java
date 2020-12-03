@@ -31,8 +31,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     *OnCreate.
-     *
+     * OnCreate.
      * @param savedInstanceState used to reload the app.
      */
     @Override
