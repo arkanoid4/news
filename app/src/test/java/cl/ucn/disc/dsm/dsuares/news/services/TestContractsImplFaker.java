@@ -10,9 +10,8 @@
 
 package cl.ucn.disc.dsm.dsuares.news.services;
 
-
-import com.github.javafaker.Faker;
-
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -59,9 +58,9 @@ public class TestContractsImplFaker {
         // .. the size(list) = 5
         Assertions.assertEquals( 5, news.size(), "List size != 5 :(");
 
-        // debug to log
+        // Debug to log
         for(News n : news ) {
-            log.debug("News: {}", n);
+            log.debug("News: {}", ToStringBuilder.reflectionToString(n, ToStringStyle.MULTI_LINE_STYLE));
         }
 
         // size = 0
@@ -74,7 +73,6 @@ public class TestContractsImplFaker {
         Assertions.assertTrue(contracts.retrieveNews(10).size() <= 10, "List != 10");
 
         log.debug("Done.");
-
     }
 
     /**
@@ -88,34 +86,31 @@ public class TestContractsImplFaker {
         // The implementation
         Contracts contracts = new ContractsImplFaker();
 
-        // Create New
-        Faker faker = Faker.instance();
+        // Nullity
+        Assertions.assertThrows(IllegalArgumentException.class, () -> contracts.saveNews(null));
 
-        for(int i = 0; i<5 ; i++) {
+        int size = contracts.retrieveNews(1000).size();
+        log.debug("Size: {}.", size);
 
-            // Attributes New
-            Long id = Integer.toUnsignedLong(i);
-            String title = faker.book().title();
-            String source = faker.name().username();
-            String author = faker.name().fullName();
-            String url = faker.company().url();
-            String urlImage = faker.company().url();
-            String description = faker.lorem().sentence();
-            String content = faker.lorem().paragraph(3);
-            ZonedDateTime publishedAt = org.threeten.bp.ZonedDateTime.now(ZoneId.of("-3"));
+        // Saving ok?
+        News news = new News(
+                "The Title",
+                "The Source",
+                "The Author",
+                "The URL",
+                "The URL Image",
+                "The Description",
+                "The Content",
+                ZonedDateTime.now(ZoneId.of("-3")));
+        contracts.saveNews(news);
 
-            // Instance New testing
-            News tNew = new News(id, title, source, author, url, urlImage, description, content, publishedAt);
+        // One more time
+        int newSize = contracts.retrieveNews(1000).size();
+        Assertions.assertEquals(size + 1, newSize, "Wrong size!");
 
-            // Save New in contracts
-            contracts.saveNews(tNew);
+        // Save duplicated
+        Assertions.assertThrows(IllegalArgumentException.class, () -> contracts.saveNews(news));
 
-            // New is not null
-            Assertions.assertNotNull(tNew);
-            // Check it is the initial size + 1
-            Assertions.assertEquals(6, contracts.retrieveNews(5+1).size(), "");
-        }
-        log.debug("Done.");
-
+        log.debug(".. Done.");
     }
 }
