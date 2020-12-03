@@ -10,7 +10,11 @@
 
 package cl.ucn.disc.dsm.dsuares.news.model;
 
+import net.openhft.hashing.LongHashFunction;
+
 import org.threeten.bp.ZonedDateTime;
+
+import cl.ucn.disc.dsm.dsuares.news.utils.Validation;
 
 /**
  * The Domain model: News.
@@ -68,89 +72,114 @@ public final class News {
     /**
      * The Constructor.
      *
-     * @param id
-     * @param title
-     * @param source
-     * @param author
-     * @param url
-     * @param urlImage
-     * @param description
-     * @param content
-     * @param publishedAt
+     * @param title       Can't be null.
+     * @param source      Can't be null.
+     * @param author      Can't be null.
+     * @param url         to the main article.
+     * @param urlImage    to the image.
+     * @param description full article.
+     * @param content     Can't be null.
+     * @param publishedAt Can't be null.
      */
-    public News(Long id, String title, String source, String author, String url, String urlImage, String description, String content, ZonedDateTime publishedAt) {
-        // TODO: add the validations
-        this.id = id;
+    public News(String title, String source, String author, String url, String urlImage, String description, String content, ZonedDateTime publishedAt) {
+
+        // Title validation
+        Validation.minSize(title, 2, "title");
         this.title = title;
+
+        // Source validation
+        Validation.minSize(source, 2, "source");
         this.source = source;
+
+        // Author validation
+        Validation.minSize(author, 3, "author");
         this.author = author;
+
+        // Apply the xxHash function
+        this.id = LongHashFunction.xx().hashChars(title + "|" + source + "|" + author);
+
+        // URL Validation
+        Validation.notNull(url, "URL");
         this.url = url;
+
+        // URL Image Validation
+        Validation.notNull(urlImage, "urlImg");
         this.urlImage = urlImage;
+
+        // Description validation
+        Validation.notNull(description,  "description");
         this.description = description;
+
+        // Content validation
+        Validation.notNull(content, "content");
         this.content = content;
+
+        // PublishedAt validation
+        Validation.notNull(publishedAt, "publishedAt");
         this.publishedAt = publishedAt;
+
     }
 
     /**
      * @return the id.
      */
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     /**
      * @return the title.
      */
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     /**
      * @return the source.
      */
     public String getSource() {
-        return source;
+        return this.source;
     }
 
     /**
      * @return the author.
      */
     public String getAuthor() {
-        return author;
+        return this.author;
     }
 
     /**
      * @return the url.
      */
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     /**
      * @return the urlImage.
      */
     public String getUrlImage() {
-        return urlImage;
+        return this.urlImage;
     }
 
     /**
      * @return the description.
      */
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     /**
      * @return the content.
      */
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     /**
      * @return the publishedAt.
      */
     public ZonedDateTime getPublishedAt() {
-        return publishedAt;
+        return this.publishedAt;
     }
 }
