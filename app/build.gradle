@@ -69,7 +69,8 @@ android {
 
         // SLF4J
         implementation 'org.slf4j:slf4j-api:1.7.30'
-        implementation 'org.slf4j:slf4j-simple:1.7.30'
+        implementation 'com.github.tony19:logback-android:2.0.0'
+        testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 
         // Java Faker!
         implementation 'com.github.javafaker:javafaker:1.0.2'
@@ -96,5 +97,13 @@ android {
         implementation 'ch.acra:acra-dialog:5.7.0'
         implementation 'ch.acra:acra-notification:5.7.0'
         implementation 'ch.acra:acra-toast:5.7.0'
+
+        // FastAdapter + RecyclerView
+        implementation 'com.mikepenz:fastadapter:3.3.1'
+        implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+        // Swiperefresh
+        implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
     }
 }
