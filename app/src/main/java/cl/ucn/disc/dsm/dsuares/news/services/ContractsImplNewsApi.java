@@ -23,7 +23,12 @@ import org.threeten.bp.ZonedDateTime;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import cl.ucn.disc.dsm.dsuares.news.model.News;
 import cl.ucn.disc.dsm.dsuares.news.utils.Validation;
@@ -116,6 +121,18 @@ public final class ContractsImplNewsApi implements Contracts {
     }
 
     /**
+     * Filter the stream.
+     *
+     * @param idExtractor
+     * @param <T> news to filter
+     * @return true if the news already exists.
+     */
+    private static <T> Predicate<T> distintByKey(Function<? super T, ?> idExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(idExtractor.apply(t), Boolean.TRUE);
+    }
+
+    /**
      * Get the list of News.
      *
      * @param size size of the list.
@@ -127,15 +144,23 @@ public final class ContractsImplNewsApi implements Contracts {
             List<Article> articles = newsApiService.getTopHeadlines("technology", size);
 
             // The List of Articles to List of News
-            List<News> news = new   ArrayList<>();
+            List<News> news = new ArrayList<>();
             for (Article article : articles){
                 news.add(toNews(article));
             }
-            return news;
+
+            // Filter and sort the News
+            return news.stream()
+                    // Remove the duplicates (by id)
+                    .filter(distintByKey(News::getId))
+                    // Sort the stream by publishedAt
+                    .sorted((k1, k2) -> k2.getPublishedAt().compareTo(k1.getPublishedAt()))
+                    // Return the stream to list
+                    .collect(Collectors.toList());
 
         } catch (IOException ex) {
-            log.error("Error", ex);
-            return null;
+            // Encapsulate
+            throw new RuntimeException(ex);
         }
     }
 
