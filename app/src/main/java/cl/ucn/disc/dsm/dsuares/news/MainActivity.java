@@ -19,9 +19,28 @@
 
 package cl.ucn.disc.dsm.dsuares.news;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.ModelAdapter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import cl.ucn.disc.dsm.dsuares.news.BuildConfig;
+import cl.ucn.disc.dsm.dsuares.news.R;
+import cl.ucn.disc.dsm.dsuares.news.model.News;
+import cl.ucn.disc.dsm.dsuares.news.model.NewsItem;
+import cl.ucn.disc.dsm.dsuares.news.services.Contracts;
+import cl.ucn.disc.dsm.dsuares.news.services.ContractsImplNewsApi;
 
 /**
  * The Main Class
@@ -31,6 +50,11 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
 
     /**
+     * The Logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(MainActivity.class);
+
+    /**
      * OnCreate.
      * @param savedInstanceState used to reload the app.
      */
@@ -38,5 +62,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // The toolbar
+        this.setSupportActionBar(findViewById(R.id.am_t_toolbar));
+
+        // The FastAdapter
+        ModelAdapter<News, NewsItem> newsAdapter = new ModelAdapter<>(NewsItem::new);
+        FastAdapter<NewsItem> fastAdapter = FastAdapter.with(newsAdapter);
+        fastAdapter.withSelectable(false);
+
+        // The Recycler view
+        RecyclerView recyclerView = findViewById(R.id.am_rv_news);
+        recyclerView.setAdapter(fastAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        // Get the news in the background thread
+        AsyncTask.execute(() -> {
+
+            // Using the contracts to get the news ..
+            Contracts contracts = new ContractsImplNewsApi("2c9f5fcc43004db4bf70eb66e91bc828");
+
+            // Get the news from NewsApi (internet!)
+            List<News> listNews = contracts.retrieveNews(30);
+
+            // Set the adapter!
+            runOnUiThread(() -> {
+                newsAdapter.add(listNews);
+            });
+        });
     }
 }
